@@ -1,0 +1,13 @@
+provisioner "remote-exec" {
+    inline = ["sudo dnf -y install python"]
+
+    connection {
+      type        = "ssh"
+      user        = "ubuntu"
+      private_key = "${file(var.ssh_key_private)}"
+    }
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -u ubuntu -i '${self.public_ip},' --private-key ${var.ssh_key_private} ../ansible/install_nginx.yml"
+  }

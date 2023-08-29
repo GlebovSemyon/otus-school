@@ -56,8 +56,8 @@ resource "yandex_compute_instance" "nginx" {
     }
 
 resource "yandex_compute_instance" "backend" {
-  name        = "${var.vm_name}${count.index}"
-  hostname    = "${var.vm_name}${count.index}"
+  name        = "${var.vm_name}_backend${count.index}"
+  hostname    = "${var.vm_name}_backend${count.index}"
   platform_id = var.platform_id
   count       = 2
   zone        = var.zone
@@ -94,8 +94,8 @@ resource "yandex_compute_instance" "backend" {
       timeout     = "1m"
     }
 resource "yandex_compute_instance" "database" {
-  name        = "${var.vm_name}${count.index}"
-  hostname    = "${var.vm_name}${count.index}"
+  name        = "${var.vm_name}_database${count.index}"
+  hostname    = "${var.vm_name}_database${count.index}"
   platform_id = var.platform_id
   count       = 1
   zone        = var.zone

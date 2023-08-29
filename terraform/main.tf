@@ -54,7 +54,8 @@ resource "yandex_compute_instance" "nginx" {
       private_key = "${file(var.ssh_key_private)}"
       timeout     = "1m"
     }
-
+  }
+}
 resource "yandex_compute_instance" "backend" {
   name        = "${var.vm_name}_backend${count.index}"
   hostname    = "${var.vm_name}_backend${count.index}"
@@ -93,6 +94,8 @@ resource "yandex_compute_instance" "backend" {
       private_key = "${file(var.ssh_key_private)}"
       timeout     = "1m"
     }
+  }
+}
 resource "yandex_compute_instance" "database" {
   name        = "${var.vm_name}_database${count.index}"
   hostname    = "${var.vm_name}_database${count.index}"
@@ -131,3 +134,5 @@ resource "yandex_compute_instance" "database" {
       private_key = "${file(var.ssh_key_private)}"
       timeout     = "1m"
     }
+  }
+}

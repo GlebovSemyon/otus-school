@@ -15,3 +15,16 @@ chmod +x env.sh
 . env.sh
 terraform apply
 ```
+
+# Домашняя работа 1
+**Для корректной работы необходимо залогиниться и настроить профиль yc**
+также на хосте запуска должен присутствовать [terraform-inventory](https://github.com/adammck/terraform-inventory) по пути `/usr/local/bin/terraform-inventory`,  
+либо команду для запуска плейбука неообходимо скорректировать в соответствии с расположением исполнительного файла `terraform-inventory`
+```sh
+cd ./terraform
+chmod +x env.sh
+. env.sh
+terraform apply
+cd ../ansible
+ansible-playbook -u ubuntu --inventory-file=/usr/local/bin/terraform-inventory run.yml
+```

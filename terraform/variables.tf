@@ -55,7 +55,7 @@ variable "disk" {
 
 variable "image_id" {
   description = "Default image ID Ubuntu 20"
-  default     = "fd808e721rc1vt7jkd0o" # ubuntu-20-04-lts-v20230626
+  default     = "fd8bkgba66kkf9eenpkb" # ubuntu-22-04-lts-v20230724
   type        = string
 }
 

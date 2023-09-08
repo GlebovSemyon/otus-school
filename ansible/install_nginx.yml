@@ -1,11 +1,14 @@
 ---
 - name: install nginx
-  hosts: all
+  hosts: backend
   become: true
+  vars_files:
+    - proxyvars.yml
   tasks:
   - name: install nginx
-    ansible.builtin.package:
+    ansible.builtin.apt:
       name: nginx
+      update_cache: true
       state: present
   - name: Start service nginx, if not started
     ansible.builtin.service:

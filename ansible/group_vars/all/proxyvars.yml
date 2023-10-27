@@ -1,0 +1,1 @@
+ansible_ssh_common_args: -oStrictHostKeyChecking=no -oProxyCommand="ssh -oStrictHostKeyChecking=no -W %h:%p -q ubuntu@158.160.63.111"

@@ -29,7 +29,7 @@ resource "yandex_vpc_route_table" "rt" {
   }
 }
 
-resource "yandex_compute_instance" "nginx" {
+resource "yandex_compute_instance" "loadbalancer" {
   name        = "${var.vm_name}${count.index}"
   hostname    = "${var.vm_name}${count.index}"
   platform_id = var.platform_id
@@ -71,7 +71,7 @@ resource "yandex_compute_instance" "nginx" {
     }
   }
   provisioner "local-exec" {
-    command = "echo ansible_ssh_common_args: '-oStrictHostKeyChecking=no -oProxyCommand=\"ssh -oStrictHostKeyChecking=no -W %h:%p -q ubuntu@${self.network_interface.0.nat_ip_address}\"' > ../ansible/proxyvars.yml"
+    command = "echo ansible_ssh_common_args: '-oStrictHostKeyChecking=no -oProxyCommand=\"ssh -oStrictHostKeyChecking=no -W %h:%p -q ubuntu@${self.network_interface.0.nat_ip_address}\"' > ../ansible/group_vars/all/proxyvars.yml"
   }
 }
 resource "yandex_compute_instance" "backend" {

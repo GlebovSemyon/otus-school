@@ -1,0 +1,56 @@
+---
+- name: install nginx
+  ansible.builtin.apt:
+    name:
+      - nginx
+    update_cache: true
+
+- name: copy nginx config file
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart nginx
+
+- name: Remove default site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: restart nginx
+
+- name: Block load balancer
+  block:
+  - name: copy site's nginx config file
+    template:
+      src: templates/lb.conf.j2
+      dest: /etc/nginx/sites-enabled/lb.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify: restart nginx
+  when: inventory_hostname in groups['loadbalancer']
+
+- name: Block backend
+  block:
+  - name: copy site's nginx config file
+    template:
+      src: templates/site.conf.j2
+      dest: /etc/nginx/sites-enabled/site.conf
+      owner: root
+      group: root
+      mode: 0644
+    notify: restart nginx
+  - name: copy site's nginx config file
+    template:
+      src: templates/index.html.j2
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+    notify: restart nginx
+  when: inventory_hostname in groups['backend']
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

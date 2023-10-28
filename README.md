@@ -33,3 +33,5 @@ terraform apply
 cd ../ansible
 ansible-playbook -u ubuntu --inventory-file=/usr/local/bin/terraform-inventory run.yml
 ```
+
+*grafana будет доступна по публичному адресу, статика на /index.html*  

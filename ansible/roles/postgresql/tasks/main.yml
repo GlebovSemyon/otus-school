@@ -1,0 +1,54 @@
+---
+- name: One way to avoid apt_key once it is removed from your distro
+  block:
+    - name: postgresql |no apt key
+      ansible.builtin.get_url:
+        url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+        dest: /etc/apt/keyrings/postgresql.asc
+
+    - name: postgresql | apt source
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/postgresql.asc]  https://apt.postgresql.org/pub/repos/apt {{ ansible_distribution_release }}-pgdg main"
+        state: present
+
+- name: postgresq-{{ postgresql_version | d('14') }} install
+  ansible.builtin.apt:
+    name:
+      - postgresql-{{ postgresql_version | d('14') }}
+      - acl
+      - libpq-dev
+      - python3-psycopg2
+    update_cache: true
+
+#- name: Install psycopg2 python package
+#  ansible.builtin.pip:
+#    name: psycopg2
+
+- name: Set superuser PostgreSQL
+  community.postgresql.postgresql_user:
+    name: "{{ postgresql_su_username | d('postgres')}}"
+    role_attr_flags: "SUPERUSER"
+    password: "{{ postgresql_su_password | password_hash('sha256') }}"
+  become_user: postgres
+  become: true
+  #no_log: true
+  environment:
+    PGOPTIONS: "-c password_encryption=scram-sha-256"
+
+- name: grafana DB
+  become_user: postgres
+  become: true
+  block:
+  - name: Create a new database with name "grafana"
+    community.postgresql.postgresql_db:
+      name: grafana
+  - name: Create grafana user
+    community.postgresql.postgresql_user:
+      db: 'grafana'
+      name: 'grafana'
+      password: "{{ postgresql_grafana_password | password_hash('sha256') }}"
+      state: present
+      expires: infinity
+      priv: CREATE,CONNECT,TEMPORARY
+    environment:
+      PGOPTIONS: "-c password_encryption=scram-sha-256"

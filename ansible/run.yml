@@ -1,11 +1,11 @@
 ---
-- name: nginx install
-  hosts: loadbalancer, backend
+- name: postgresql install
+  hosts: database
   become: true
   roles:
-  - role: nginx
+  - role: postgresql
     tags: 
-    - nginx
+    - db
 
 - name: grafana install
   hosts: backend
@@ -15,10 +15,10 @@
     tags: 
     - grafana
 
-#- name: postgresql install
-#  hosts: database
-#  become: true
-#  roles:
-#  - role: postgresql
-#    tags: 
-#    - db
+- name: nginx install
+  hosts: loadbalancer, backend
+  become: true
+  roles:
+  - role: nginx
+    tags: 
+    - nginx

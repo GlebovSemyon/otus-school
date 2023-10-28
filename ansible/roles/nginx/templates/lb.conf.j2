@@ -1,4 +1,5 @@
 upstream backend {
+	ip_hash;
   {% for host in groups['backend'] %}
     server {{ hostvars[host]['ansible_host'] }};
   {% endfor %}
@@ -10,5 +11,6 @@ server {
 	
 	location / {
 		proxy_pass http://backend;
+		proxy_set_header Host $http_host;
 	}
 }
